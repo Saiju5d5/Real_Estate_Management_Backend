@@ -1,9 +1,9 @@
 package com.realestate.rems.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-
-@Configuration
-@EnableMethodSecurity   // 🔥 REQUIRED for @PreAuthorize
+/**
+ * Method security is already enabled in SecurityConfig.
+ * This class is kept for potential future method security configurations.
+ */
 public class MethodSecurityConfig {
+    // Method security is configured in SecurityConfig
 }

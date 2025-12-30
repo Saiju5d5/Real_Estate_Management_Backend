@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Entity
@@ -19,22 +20,24 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "City is required")
     private String city;
 
-    @NotNull
+    @NotNull(message = "Price is required")
+    @Positive(message = "Price must be positive")
     private Double price;
 
-    @NotBlank
-    private String type;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Property type is required")
+    private PropertyType type;
 
-    @NotBlank
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Property status is required")
+    private PropertyStatus status;
 
-    // 🔥 IMPORTANT FIX
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     @JsonIgnore

@@ -5,7 +5,7 @@ import com.realestate.rems.dto.LoginRequestDTO;
 import com.realestate.rems.dto.LoginResponseDTO;
 import com.realestate.rems.model.User;
 import com.realestate.rems.service.AuthService;
-
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +21,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // ✅ REGISTER (UNCHANGED)
+    // ✅ REGISTER with validation
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<User> register(@Valid @RequestBody User user) {
         User savedUser = authService.register(user);
         return ResponseEntity.ok(savedUser);
     }
@@ -31,7 +31,7 @@ public class AuthController {
     // ✅ FIXED & CLEAN LOGIN
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(
-            @RequestBody LoginRequestDTO request) {
+            @Valid @RequestBody LoginRequestDTO request) {
 
         User user = authService.login(
                 request.getEmail(),

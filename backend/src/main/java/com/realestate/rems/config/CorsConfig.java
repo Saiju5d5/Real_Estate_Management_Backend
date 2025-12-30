@@ -3,42 +3,50 @@ package com.realestate.rems.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Global CORS configuration.
- * Allows frontend applications (React/Angular) to access backend APIs.
+ * Allows frontend applications (React/Angular) and API clients (Postman) to access backend APIs.
  */
 @Configuration
 public class CorsConfig {
 
     @Bean
-    public CorsFilter corsFilter() {
-
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
 
-        // Allow frontend origin
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        // Allow all origins (for development and Postman testing)
+        // In production, restrict to specific origins: config.setAllowedOrigins(List.of("https://yourdomain.com"))
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
 
-        // Allow common HTTP methods
-        config.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        // Allow all HTTP methods
+        config.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"
         ));
 
-        // Allow headers including Authorization (JWT)
-        config.setAllowedHeaders(List.of(
-                "Authorization", "Content-Type"
+        // Allow all headers including Authorization (JWT)
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setExposedHeaders(Arrays.asList(
+                "Authorization", "Content-Type", "X-Total-Count"
         ));
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+        // Allow preflight requests to be cached for 1 hour
+        config.setMaxAge(3600L);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        return new CorsFilter(source);
+        return source;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
     }
 }

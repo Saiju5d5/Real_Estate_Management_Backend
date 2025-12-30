@@ -1,5 +1,7 @@
 package com.realestate.rems.service;
 
+import com.realestate.rems.exception.InvalidCredentialsException;
+import com.realestate.rems.exception.ResourceNotFoundException;
 import com.realestate.rems.model.User;
 import com.realestate.rems.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +35,10 @@ public class AuthService {
     public User login(String email, String rawPassword) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         return user;

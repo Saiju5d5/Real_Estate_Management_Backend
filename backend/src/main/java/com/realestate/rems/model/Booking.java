@@ -27,6 +27,7 @@ public class Booking {
      */
     @ManyToOne
     @JoinColumn(name = "property_id", nullable = false)
+    @NotNull(message = "Property is required")
     private Property property;
 
     /**
@@ -34,15 +35,18 @@ public class Booking {
      */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @NotNull(message = "User is required")
     private User user;
 
     @NotNull(message = "Visit date is required")
+    @Column(nullable = false)
     private LocalDate visitDate;
 
     /**
-     * Booking status:
-     * PENDING, APPROVED, REJECTED, COMPLETED
+     * Booking status
      */
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    @NotNull(message = "Booking status is required")
+    private BookingStatus status;
 }

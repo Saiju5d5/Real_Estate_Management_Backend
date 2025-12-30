@@ -2,25 +2,33 @@ package com.realestate.rems.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    // 🔐 Same key must be used for generate + validate
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final SecretKey key;
+    private final long expirationTime;
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    // ✅ Fixed secret key from configuration (persists across restarts)
+    public JwtUtil(@Value("${jwt.secret}") String secret,
+                   @Value("${jwt.expiration:3600000}") long expirationTime) {
+        // Convert string secret to SecretKey
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.expirationTime = expirationTime;
+    }
 
     // ✅ Generate token
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key)
                 .compact();
     }

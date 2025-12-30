@@ -27,7 +27,37 @@ public class PropertyService {
     @Transactional
     public Property getPropertyById(Long id) {
         return propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Property not found"));
+                .orElseThrow(() -> new com.realestate.rems.exception.ResourceNotFoundException("Property not found with id: " + id));
+    }
+
+    @Transactional
+    public Property updateProperty(Long id, Property propertyDetails) {
+        Property property = getPropertyById(id);
+        
+        // Update fields if provided
+        if (propertyDetails.getTitle() != null && !propertyDetails.getTitle().isEmpty()) {
+            property.setTitle(propertyDetails.getTitle());
+        }
+        if (propertyDetails.getCity() != null && !propertyDetails.getCity().isEmpty()) {
+            property.setCity(propertyDetails.getCity());
+        }
+        if (propertyDetails.getPrice() != null) {
+            property.setPrice(propertyDetails.getPrice());
+        }
+        if (propertyDetails.getType() != null) {
+            property.setType(propertyDetails.getType());
+        }
+        if (propertyDetails.getStatus() != null) {
+            property.setStatus(propertyDetails.getStatus());
+        }
+        if (propertyDetails.getOwner() != null) {
+            property.setOwner(propertyDetails.getOwner());
+        }
+        if (propertyDetails.getAgent() != null) {
+            property.setAgent(propertyDetails.getAgent());
+        }
+        
+        return propertyRepository.save(property);
     }
 
     @Transactional

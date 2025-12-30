@@ -1,13 +1,18 @@
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\config\SecurityConfig.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\service\UserService.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\Property.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\PropertyType.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\RealEstateApplication.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\dto\LoginResponseDTO.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\repository\UserRepository.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\service\PropertyService.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\BookingStatus.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\service\UserDetailsServiceImpl.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\ApiResponse.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\dto\LoginRequestDTO.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\PropertyStatus.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\service\BookingService.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\repository\BookingRepository.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\config\MethodSecurityConfig.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\exception\GlobalExceptionHandler.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\config\JwtUtil.java
@@ -20,6 +25,8 @@ C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\service\Auth
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\controller\AuthController.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\config\SwaggerConfig.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\repository\PropertyRepository.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\controller\BookingController.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\User.java
+C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\exception\InvalidCredentialsException.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\controller\PropertyController.java
 C:\Real_Estate_Management\backend\src\main\java\com\realestate\rems\model\Role.java
