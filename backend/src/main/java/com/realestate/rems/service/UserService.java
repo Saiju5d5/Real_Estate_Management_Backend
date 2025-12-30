@@ -43,20 +43,35 @@ public class UserService {
      * Update user by ID.
      */
     @Transactional
-    public User updateUser(Long id, User userDetails) {
+    public User updateUser(Long id, com.realestate.rems.dto.UserUpdateDTO userUpdateDTO) {
         User user = getUserById(id);
         
-        // Update fields if provided
-        if (userDetails.getEmail() != null && !userDetails.getEmail().isEmpty()) {
-            user.setEmail(userDetails.getEmail());
+        // Update email if provided
+        if (userUpdateDTO.getEmail() != null && !userUpdateDTO.getEmail().isEmpty()) {
+            // Check if email is already taken by another user
+            userRepository.findByEmail(userUpdateDTO.getEmail())
+                    .ifPresent(existingUser -> {
+                        if (!existingUser.getId().equals(id)) {
+                            throw new IllegalArgumentException("Email already exists: " + userUpdateDTO.getEmail());
+                        }
+                    });
+            user.setEmail(userUpdateDTO.getEmail());
         }
-        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        
+        // Update password only if provided (optional)
+        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
         }
-        if (userDetails.getRoles() != null && !userDetails.getRoles().isEmpty()) {
-            user.setRoles(userDetails.getRoles());
+        
+        // Update roles if provided
+        if (userUpdateDTO.getRoles() != null && !userUpdateDTO.getRoles().isEmpty()) {
+            user.setRoles(userUpdateDTO.getRoles());
         }
-        user.setEnabled(userDetails.isEnabled());
+        
+        // Update enabled status if provided
+        if (userUpdateDTO.getEnabled() != null) {
+            user.setEnabled(userUpdateDTO.getEnabled());
+        }
         
         return userRepository.save(user);
     }

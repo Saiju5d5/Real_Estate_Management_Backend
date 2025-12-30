@@ -19,12 +19,10 @@ public class PropertyService {
         return propertyRepository.save(property);
     }
 
-    @Transactional
     public List<Property> getAllProperties() {
-        return propertyRepository.findAll(); // ✅ FIX
+        return propertyRepository.findAll();
     }
 
-    @Transactional
     public Property getPropertyById(Long id) {
         return propertyRepository.findById(id)
                 .orElseThrow(() -> new com.realestate.rems.exception.ResourceNotFoundException("Property not found with id: " + id));

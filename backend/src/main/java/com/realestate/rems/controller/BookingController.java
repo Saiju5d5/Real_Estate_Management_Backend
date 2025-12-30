@@ -1,5 +1,6 @@
 package com.realestate.rems.controller;
 
+import com.realestate.rems.dto.BookingRequestDTO;
 import com.realestate.rems.model.ApiResponse;
 import com.realestate.rems.model.Booking;
 import com.realestate.rems.model.BookingStatus;
@@ -30,8 +31,13 @@ public class BookingController {
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','AGENT','CUSTOMER','OWNER')")
-    public ResponseEntity<Booking> createBooking(@Valid @RequestBody Booking booking) {
-        Booking createdBooking = bookingService.createBooking(booking);
+    public ResponseEntity<Booking> createBooking(@Valid @RequestBody BookingRequestDTO bookingRequest) {
+        Booking createdBooking = bookingService.createBooking(
+                bookingRequest.getPropertyId(),
+                bookingRequest.getUserId(),
+                bookingRequest.getVisitDate(),
+                bookingRequest.getStatus()
+        );
         return ResponseEntity.ok(createdBooking);
     }
 

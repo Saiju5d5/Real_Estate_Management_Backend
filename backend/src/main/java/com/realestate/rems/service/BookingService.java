@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -34,22 +35,26 @@ public class BookingService {
      * Create a new booking
      */
     @Transactional
-    public Booking createBooking(Booking booking) {
+    public Booking createBooking(Long propertyId, Long userId, LocalDate visitDate, BookingStatus status) {
         // Validate property exists
-        Property property = propertyRepository.findById(booking.getProperty().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + booking.getProperty().getId()));
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + propertyId));
 
         // Validate user exists
-        User user = userRepository.findById(booking.getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + booking.getUser().getId()));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         // Set default status if not provided
-        if (booking.getStatus() == null) {
-            booking.setStatus(BookingStatus.PENDING);
+        if (status == null) {
+            status = BookingStatus.PENDING;
         }
 
-        booking.setProperty(property);
-        booking.setUser(user);
+        Booking booking = Booking.builder()
+                .property(property)
+                .user(user)
+                .visitDate(visitDate)
+                .status(status)
+                .build();
 
         return bookingRepository.save(booking);
     }

@@ -11,12 +11,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -40,30 +44,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-            String token = authHeader.substring(7);
+            try {
+                String token = authHeader.substring(7);
 
-            if (jwtUtil.validateToken(token)) {
-                String email = jwtUtil.extractEmail(token);
+                if (jwtUtil.validateToken(token)) {
+                    String email = jwtUtil.extractEmail(token);
 
-                if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                    if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    UserDetails userDetails =
-                            userDetailsService.loadUserByUsername(email);
+                        UserDetails userDetails =
+                                userDetailsService.loadUserByUsername(email);
 
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails,
+                                        null,
+                                        userDetails.getAuthorities()
+                                );
 
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+                        authentication.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
 
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authentication);
+                        SecurityContextHolder.getContext()
+                                .setAuthentication(authentication);
+                    }
                 }
+            } catch (Exception e) {
+                // Log error but continue filter chain
+                // Invalid tokens will be handled by Spring Security
+                logger.error("Error processing JWT token: {}", e.getMessage());
             }
         }
 

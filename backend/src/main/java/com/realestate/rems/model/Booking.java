@@ -1,5 +1,6 @@
 package com.realestate.rems.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Booking {
 
     @Id
@@ -25,17 +27,19 @@ public class Booking {
     /**
      * Property being booked for visit
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "property_id", nullable = false)
     @NotNull(message = "Property is required")
+    @JsonIgnoreProperties({"owner", "agent"})
     private Property property;
 
     /**
      * User who booked the visit
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "User is required")
+    @JsonIgnoreProperties({"password", "roles"})
     private User user;
 
     @NotNull(message = "Visit date is required")

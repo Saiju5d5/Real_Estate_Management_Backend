@@ -1,12 +1,12 @@
 package com.realestate.rems.controller;
 
+import com.realestate.rems.dto.UserUpdateDTO;
 import com.realestate.rems.model.ApiResponse;
 import com.realestate.rems.model.User;
 import com.realestate.rems.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,10 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        List<User> users = userService.getAllUsers();
+        // Don't return passwords
+        users.forEach(user -> user.setPassword(null));
+        return ResponseEntity.ok(users);
     }
 
     /**
@@ -40,7 +43,10 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        User user = userService.getUserById(id);
+        // Don't return password
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
     }
 
     /**
@@ -48,8 +54,10 @@ public class UserController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
-        User updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+        User updatedUser = userService.updateUser(id, userUpdateDTO);
+        // Don't return password
+        updatedUser.setPassword(null);
         return ResponseEntity.ok(updatedUser);
     }
 

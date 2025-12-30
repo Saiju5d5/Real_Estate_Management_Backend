@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/properties")
 @CrossOrigin
-@SecurityRequirement(name = "bearerAuth")   // Swagger JWT
+@SecurityRequirement(name = "bearerAuth") // Swagger JWT
 public class PropertyController {
 
     @Autowired
@@ -39,8 +39,8 @@ public class PropertyController {
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','AGENT','CUSTOMER')")
-    public List<Property> getAllProperties() {
-        return propertyService.getAllProperties();
+    public ResponseEntity<List<Property>> getAllProperties() {
+        return ResponseEntity.ok(propertyService.getAllProperties());
     }
 
     /**
@@ -48,8 +48,8 @@ public class PropertyController {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','AGENT','CUSTOMER')")
-    public Property getPropertyById(@PathVariable Long id) {
-        return propertyService.getPropertyById(id);
+    public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {
+        return ResponseEntity.ok(propertyService.getPropertyById(id));
     }
 
     /**
