@@ -10,8 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 @Service
 public class AuthService {
 
@@ -31,14 +29,9 @@ public class AuthService {
         User user = new User();
         user.setEmail(registrationDTO.getEmail());
         user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
+        user.setRole(registrationDTO.getRole());
+        user.setName(registrationDTO.getName());
         user.setEnabled(true);
-
-        // Set default role if not provided
-        if (registrationDTO.getRoles() == null || registrationDTO.getRoles().isEmpty()) {
-            user.setRoles(Set.of("CUSTOMER"));
-        } else {
-            user.setRoles(registrationDTO.getRoles());
-        }
 
         return userRepository.save(user);
     }

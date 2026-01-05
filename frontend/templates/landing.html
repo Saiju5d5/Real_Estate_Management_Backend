@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>EstateManager - Find Your Perfect Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col">
+    <header class="bg-white dark:bg-[#1a2634] border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="size-9 rounded-lg bg-primary flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-[20px]">real_estate_agent</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">EstateManager</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <a th:href="@{/auth/login}" class="text-slate-700 dark:text-slate-200 hover:text-primary dark:hover:text-primary font-medium text-sm transition-colors">Log In</a>
+                <a th:href="@{/auth/register}" class="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold text-sm shadow-md transition-all">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col">
+        <section class="bg-background-light dark:bg-background-dark py-10 px-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="max-w-4xl mx-auto text-center flex flex-col gap-5">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Find your perfect home</h2>
+                    <p class="text-lg text-slate-500 dark:text-slate-300 font-medium">Search thousands of properties for sale and rent in your area</p>
+                </div>
+                <div class="w-full max-w-3xl mx-auto bg-white dark:bg-slate-800 p-2 rounded-xl shadow-lg flex flex-col sm:flex-row gap-2">
+                    <div class="relative flex-grow group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-slate-400">search</span></div>
+                        <input id="search-input" class="block w-full pl-10 pr-3 py-3 border-none rounded-lg text-slate-900 dark:text-white dark:bg-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-primary sm:text-sm" placeholder="Enter an address, city, or ZIP code" type="text"/>
+                    </div>
+                    <div class="h-px sm:h-auto sm:w-px bg-slate-200 dark:bg-slate-600 mx-1"></div>
+                    <select id="type-filter" class="bg-white dark:bg-slate-800 border-none rounded-lg text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary px-3">
+                        <option value="">All Types</option>
+                        <option value="rent">For Rent</option>
+                        <option value="buy">For Sale</option>
+                    </select>
+                    <button id="search-btn" class="bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"><span>Search</span></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex-grow px-4 sm:px-6 lg:px-8 py-8 w-full">
+            <div class="max-w-[1440px] mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Featured Properties</h3>
+                </div>
+                <div id="properties-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="loading flex justify-center items-center py-20">
+                        <div class="spinner border-4 border-slate-200 border-t-primary rounded-full w-12 h-12 animate-spin"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a2634] py-8 text-center text-slate-500 text-sm">
+        <p>© 2024 EstateManager Inc. All rights reserved.</p>
+    </footer>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/property.service.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load featured properties
+            await loadProperties();
+            
+            // Setup search
+            document.getElementById('search-btn').addEventListener('click', handleSearch);
+            document.getElementById('search-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+        });
+
+        async function loadProperties() {
+            try {
+                const properties = await propertyService.getAllProperties();
+                displayProperties(properties.slice(0, 8));
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                document.getElementById('properties-container').innerHTML = 
+                    '<p class="col-span-full text-center text-slate-500 py-20">Failed to load properties. Please try again later.</p>';
+            }
+        }
+
+        function displayProperties(properties) {
+            const container = document.getElementById('properties-container');
+            if (!properties || properties.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-20">No properties available at the moment.</p>';
+                return;
+            }
+
+            container.innerHTML = properties.map(property => {
+                const price = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    maximumFractionDigits: 0
+                }).format(property.price);
+                
+                // Fix image URL
+                let mainImage = 'https://via.placeholder.com/400x300?text=No+Image';
+                if (property.images && property.images.length > 0) {
+                    const img = property.images[0];
+                    if (img.startsWith('http://') || img.startsWith('https://')) {
+                        mainImage = img;
+                    } else if (img.startsWith('/uploads/')) {
+                        mainImage = img;
+                    } else {
+                        mainImage = '/uploads/images/' + img;
+                    }
+                }
+                
+                return `
+                    <article class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 flex flex-col">
+                        <div class="relative aspect-[4/3] overflow-hidden">
+                            <a href="/property/details?id=${property.id}" class="block w-full h-full">
+                                <img src="${mainImage}" alt="${property.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'"/>
+                            </a>
+                            <div class="absolute top-3 left-3">
+                                <span class="px-2.5 py-1 bg-primary text-white text-xs font-bold rounded shadow-sm">${property.type === 'rent' ? 'RENT' : 'SALE'}</span>
+                            </div>
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold text-primary">${property.type === 'rent' ? price + '/mo' : price}</h4>
+                            <address class="not-italic text-slate-900 dark:text-white font-semibold truncate">${property.title}</address>
+                            <p class="text-slate-500 text-sm mb-4">${property.location}</p>
+                            <div class="mt-auto border-t border-slate-100 dark:border-slate-700 pt-4">
+                                <a href="/property/details?id=${property.id}" class="block w-full bg-primary hover:bg-blue-600 text-white text-center py-2 rounded-lg font-semibold text-sm transition-all">View Details</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function handleSearch() {
+            const search = document.getElementById('search-input').value.trim();
+            const type = document.getElementById('type-filter').value;
+            
+            try {
+                const filters = {};
+                if (search) filters.search = search;
+                if (type) filters.type = type;
+                
+                const properties = await propertyService.getAllProperties(filters);
+                displayProperties(properties);
+            } catch (error) {
+                console.error('Search error:', error);
+                showNotification('Search failed. Please try again.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

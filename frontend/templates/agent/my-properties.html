@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>My Properties - EstateManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-hidden relative">
+<div class="flex h-screen w-full">
+<aside class="w-72 flex-none bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full hidden lg:flex z-10">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
+</div>
+<div>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">EstateManager</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Manage portfolio</p>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/agent/dashboard}">
+<span class="material-symbols-outlined fill-1">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary dark:text-white transition-colors" th:href="@{/agent/add-property}">
+<span class="material-symbols-outlined">add</span>
+<span class="text-sm font-medium">Add Property</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/agent/my-properties}">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 group-hover:text-primary transition-colors">home</span>
+<span class="text-sm font-medium">My Properties</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/agent/profile}">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 group-hover:text-primary transition-colors">manage_accounts</span>
+<span class="text-sm font-medium">Profile Management</span>
+</a>
+</div>
+</div>
+<div class="mt-auto px-6 py-2 border-t border-slate-200 dark:border-slate-800">
+<button onclick="logout()" class="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-red-500 transition-colors py-2 text-sm font-medium">
+<span class="material-symbols-outlined text-[20px]">logout</span> Log Out
+</button>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-background-light dark:bg-background-dark">
+<div class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
+</div>
+<span class="font-bold text-slate-900 dark:text-white text-lg">EstateManager</span>
+</div>
+<button class="text-slate-600 dark:text-slate-400"><span class="material-symbols-outlined">menu</span></button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight mb-2">My Properties</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Manage your property listings</p>
+</div>
+<div class="flex items-center gap-3">
+<button onclick="window.location.href='/agent/add-property'" class="bg-primary hover:bg-blue-600 text-white rounded-lg px-5 py-2.5 flex items-center gap-2 font-bold text-sm transition-all shadow-md shadow-blue-500/20">
+<span class="material-symbols-outlined text-[20px]">add</span> Add New Property
+</button>
+</div>
+</div>
+
+<div class="flex flex-col lg:flex-row gap-4 justify-between items-center">
+<div class="relative w-full lg:w-96 group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400">search</span>
+</div>
+<input id="dashboard-search" class="block w-full pl-10 pr-3 py-2.5 border-none rounded-xl leading-5 bg-transparent placeholder-slate-400 text-slate-900 dark:text-white focus:ring-0 sm:text-sm" placeholder="Search by address, city or MLS #" type="text"/>
+</div>
+<div class="flex items-center gap-2 w-full lg:w-auto overflow-x-auto p-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<button id="filter-all" class="filter-btn active whitespace-nowrap px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-medium rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">All Listings</button>
+</div>
+</div>
+
+<div id="listings-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="col-span-full flex justify-center py-20">
+<div class="spinner border-4 border-slate-200 border-t-primary rounded-full w-12 h-12 animate-spin"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+<script th:src="@{/js/config/api.js}"></script>
+<script th:src="@{/js/config/auth.js}"></script>
+<script th:src="@{/js/utils/role-guard.js}"></script>
+<script th:src="@{/js/services/property.service.js}"></script>
+<script th:src="@{/js/services/user.service.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!RoleGuard.requireAgent()) return;
+
+    await loadMyProperties();
+
+    document.getElementById('dashboard-search').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.property-card');
+        cards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(query) ? 'flex' : 'none';
+        });
+    });
+});
+
+async function loadMyProperties() {
+    try {
+        let user = authManager.getUser();
+        if (!user || !user.userId) {
+            const profile = await userService.getProfile();
+            if (!user) user = {};
+            user.userId = profile.id;
+            authManager.saveUser(user);
+        }
+
+        const properties = await propertyService.getPropertiesByAgentId(user.userId);
+        displayProperties(properties);
+    } catch (error) {
+        console.error('Error loading properties:', error);
+        showNotification('Failed to load properties', 'error');
+    }
+}
+
+function displayProperties(properties) {
+    const container = document.getElementById('listings-grid');
+    if (!properties || properties.length === 0) {
+        container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-20">You haven\'t added any properties yet. <a href="/agent/add-property" class="text-primary font-bold hover:underline">Add Your First Property</a></p>';
+        return;
+    }
+
+    container.innerHTML = properties.map(property => {
+        const price = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+        }).format(property.price);
+        
+        // Fix image URL
+        let mainImage = 'https://via.placeholder.com/400x300?text=No+Image';
+        if (property.images && property.images.length > 0) {
+            const img = property.images[0];
+            if (img.startsWith('http://') || img.startsWith('https://')) {
+                mainImage = img;
+            } else if (img.startsWith('/uploads/')) {
+                mainImage = img;
+            } else {
+                mainImage = '/uploads/images/' + img;
+            }
+        }
+        
+        return `
+            <article class="property-card group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col">
+                <div class="relative aspect-[4/3] overflow-hidden">
+                    <a href="/property/details?id=${property.id}" class="block w-full h-full">
+                        <img src="${mainImage}" alt="${property.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'"/>
+                    </a>
+                    <div class="absolute top-3 left-3 z-10">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900/60 dark:text-green-300 border border-green-200 uppercase tracking-wide">Active</span>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col gap-3 flex-1">
+                    <h3 class="text-2xl font-bold text-primary dark:text-blue-400">${price}</h3>
+                    <p class="text-slate-900 dark:text-white font-medium truncate">${property.title}</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm truncate">${property.location}</p>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex gap-2">
+                    <button onclick="window.location.href='/agent/update-property?id=${property.id}'" class="flex-1 py-2 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                    </button>
+                    <button onclick="deleteProperty(${property.id})" class="py-2 px-3 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete Listing">
+                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                    </button>
+                </div>
+            </article>
+        `;
+    }).join('');
+}
+
+async function deleteProperty(id) {
+    if (!confirm('Are you sure you want to delete this property?')) return;
+    
+    try {
+        await propertyService.deleteProperty(id);
+        showNotification('Property deleted successfully', 'success');
+        await loadMyProperties();
+    } catch (error) {
+        showNotification(error.message || 'Failed to delete property', 'error');
+    }
+}
+
+function logout() {
+    authService.logout();
+}
+</script>
+</body>
+</html>

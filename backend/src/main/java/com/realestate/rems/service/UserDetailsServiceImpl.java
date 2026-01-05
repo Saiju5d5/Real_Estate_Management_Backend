@@ -28,13 +28,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        // ✅ SAFETY CHECK
-        List<SimpleGrantedAuthority> authorities =
-                (user.getRoles() == null || user.getRoles().isEmpty())
-                        ? Collections.emptyList()
-                        : user.getRoles().stream()
-                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                            .collect(Collectors.toList());
+        // Convert role to Spring Security authority
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole())
+        );
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

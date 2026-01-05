@@ -1,28 +1,26 @@
 package com.realestate.rems.dto;
 
-import java.util.Set;
-
 public class LoginResponseDTO {
 
     private String token;
     private String email;
-    private Set<String> roles;
+    private String role;
     private Long userId;
 
     // No-arg constructor for JSON deserialization
     public LoginResponseDTO() {
     }
 
-    public LoginResponseDTO(String token, String email, Set<String> roles) {
+    public LoginResponseDTO(String token, String email, String role) {
         this.token = token;
         this.email = email;
-        this.roles = roles;
+        this.role = role;
     }
 
-    public LoginResponseDTO(String token, String email, Set<String> roles, Long userId) {
+    public LoginResponseDTO(String token, String email, String role, Long userId) {
         this.token = token;
         this.email = email;
-        this.roles = roles;
+        this.role = role;
         this.userId = userId;
     }
 
@@ -42,12 +40,12 @@ public class LoginResponseDTO {
         this.email = email;
     }
 
-    public Set<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Long getUserId() {

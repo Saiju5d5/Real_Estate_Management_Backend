@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Client Dashboard - EstateManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col">
+    <header class="bg-white dark:bg-[#1a2634] border-b border-slate-200 dark:border-slate-700">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="size-9 rounded-lg bg-primary flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-[20px]">real_estate_agent</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">EstateManager</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-400 shadow-sm">
+                        <span class="material-symbols-outlined text-[28px]">account_circle</span>
+                    </div>
+                    <span id="user-name-display" class="text-sm font-bold text-slate-900 dark:text-white">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col">
+        <section class="bg-background-light dark:bg-background-dark py-10 px-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="max-w-4xl mx-auto text-center flex flex-col gap-5">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">Find your perfect home</h2>
+                    <p class="text-lg text-slate-500 dark:text-slate-300 font-medium">Search thousands of properties for sale and rent in your area</p>
+                </div>
+                <div class="w-full max-w-3xl mx-auto bg-white dark:bg-slate-800 p-2 rounded-xl shadow-lg flex flex-col sm:flex-row gap-2">
+                    <div class="relative flex-grow group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-slate-400">search</span></div>
+                        <input id="search-input" class="block w-full pl-10 pr-3 py-3 border-none rounded-lg text-slate-900 dark:text-white dark:bg-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-primary sm:text-sm" placeholder="Enter an address, neighborhood, city, or ZIP code" type="text"/>
+                    </div>
+                    <div class="h-px sm:h-auto sm:w-px bg-slate-200 dark:bg-slate-600 mx-1"></div>
+                    <button id="search-btn" class="bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"><span>Search</span></button>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-grow max-w-[1440px] mx-auto w-full">
+            <aside class="sticky top-0 h-[calc(100vh-64px)] w-64 p-4 bg-white dark:bg-[#1a2634] border-r border-slate-200 dark:border-slate-700 flex flex-col gap-6 py-8 hidden lg:flex">
+                <nav class="flex flex-col gap-1">
+                    <a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg font-bold text-sm" th:href="@{/client/dashboard}"><span class="material-symbols-outlined text-[20px]">dashboard</span> Dashboard</a>
+                    <a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-medium text-sm transition-colors" th:href="@{/client/favorites}"><span class="material-symbols-outlined text-[20px]">bookmark</span> Saved Properties</a>
+                    <a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-medium text-sm transition-colors" th:href="@{/client/profile}"><span class="material-symbols-outlined text-[20px]">account_circle</span> Profile</a>
+                </nav>
+                <div class="h-px bg-slate-200 dark:bg-slate-700 -my-2"></div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Filters</h3>
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-medium text-slate-700 dark:text-slate-200">Property Type</label>
+                    <div class="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
+                        <button id="buy-toggle" class="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow-sm transition-all">Buy</button>
+                        <button id="rent-toggle" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors">Rent</button>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-medium text-slate-700 dark:text-slate-200" for="price-filter">Price</label>
+                    <select class="form-select w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white text-sm focus:ring-primary focus:border-primary" id="price-filter">
+                        <option value="any">Any Price</option>
+                        <option value="0-500000">Under $500,000</option>
+                        <option value="500000-1000000">$500,000 - $1,000,000</option>
+                        <option value="1000000+">$1,000,000+</option>
+                    </select>
+                </div>
+                <button id="apply-filters-btn" class="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold text-sm shadow-md transition-all mt-auto active:scale-95">Apply Filters</button>
+                <button onclick="window.logout()" class="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-red-500 transition-colors py-2 text-sm font-medium">
+                    <span class="material-symbols-outlined text-[20px]">logout</span> Log Out
+                </button>
+            </aside>
+
+            <section class="flex-grow px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col min-h-[calc(100vh-64px)] bg-background-light dark:bg-background-dark">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Property Listings</h3>
+                    <div class="flex items-center gap-3">
+                        <span id="results-count" class="text-sm font-medium text-slate-500 whitespace-nowrap">Loading...</span>
+                    </div>
+                </div>
+
+                <div id="listings-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="col-span-full flex justify-center py-20">
+                        <div class="spinner border-4 border-slate-200 border-t-primary rounded-full w-12 h-12 animate-spin"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a2634] py-8 text-center text-slate-500 text-sm">
+        <p>© 2024 EstateManager Inc. All rights reserved.</p>
+    </footer>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script th:src="@{/js/services/property.service.js}"></script>
+    <script th:src="@{/js/services/favorite.service.js}"></script>
+    <script th:src="@{/js/services/user.service.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!RoleGuard.requireClient()) return;
+
+            // Load user data
+            try {
+                const user = await userService.getProfile();
+                document.getElementById('user-name-display').textContent = user.name || user.email;
+            } catch (error) {
+                console.error('Error loading user:', error);
+            }
+
+            // Load properties
+            await loadProperties();
+
+            // Setup filters
+            setupFilters();
+        });
+
+        let currentType = 'buy';
+
+        async function loadProperties(filters = {}) {
+            try {
+                const allFilters = { ...filters, type: currentType };
+                const properties = await propertyService.getAllProperties(allFilters);
+                displayProperties(properties);
+                document.getElementById('results-count').textContent = `${properties.length} Results`;
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                showNotification('Failed to load properties', 'error');
+            }
+        }
+
+        function displayProperties(properties) {
+            const container = document.getElementById('listings-grid');
+            if (!properties || properties.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-slate-500 py-20">No properties found.</p>';
+                return;
+            }
+
+            container.innerHTML = properties.map(property => {
+                const price = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    maximumFractionDigits: 0
+                }).format(property.price);
+                
+                // Fix image URL
+                let mainImage = "data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27 viewBox=%270 0 400 300%27%3E%3Crect fill=%27%23e0e0e0%27 width=%27400%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2745%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 font-family=%27Arial, sans-serif%27 font-size=%2724%27 fill=%27%23888%27%3ENo Image%3C/text%3E%3C/svg%3E";
+                if (property.images && property.images.length > 0) {
+                    const img = property.images[0];
+                    if (img.startsWith('http://') || img.startsWith('https://')) {
+                        mainImage = img;
+                    } else if (img.startsWith('/uploads/')) {
+                        mainImage = img;
+                    } else {
+                        mainImage = '/uploads/images/' + img;
+                    }
+                }
+                
+                return `
+                    <article class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 flex flex-col" data-property-id="${property.id}">
+                        <div class="relative aspect-[4/3] overflow-hidden">
+                            <a href="/property/details?id=${property.id}" class="block w-full h-full">
+                                <img src="${mainImage}" alt="${property.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%23e0e0e0%27 width=%27400%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23888%27%3ENo Image%3C/text%3E%3C/svg%3E'"/>
+                            </a>
+                            <button onclick="toggleFavorite(${property.id}, this)" class="bookmark-btn absolute top-3 right-3 p-2 bg-black/30 hover:bg-black/50 backdrop-blur-sm rounded-full text-white transition-colors">
+                                <span class="material-symbols-outlined text-[20px] block">favorite</span>
+                            </button>
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold text-primary">${currentType === 'rent' ? price + '/mo' : price}</h4>
+                            <address class="not-italic text-slate-900 dark:text-white font-semibold truncate">${property.title}</address>
+                            <p class="text-slate-500 text-sm mb-4">${property.location}</p>
+                            <div class="mt-auto border-t border-slate-100 dark:border-slate-700 pt-4">
+                                <a href="/property/details?id=${property.id}" class="block w-full bg-primary hover:bg-blue-600 text-white text-center py-2 rounded-lg font-semibold text-sm transition-all">View Details</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            // Update favorite buttons
+            updateFavoriteButtons();
+        }
+
+        async function updateFavoriteButtons() {
+            try {
+                const favorites = await favoriteService.getFavorites();
+                const favoriteIds = new Set(favorites.map(f => f.property.id));
+                
+                document.querySelectorAll('.bookmark-btn').forEach(btn => {
+                    const card = btn.closest('article');
+                    const propertyId = parseInt(card.dataset.propertyId);
+                    const icon = btn.querySelector('span');
+                    
+                    if (favoriteIds.has(propertyId)) {
+                        icon.classList.add('filled');
+                        icon.style.color = '#ef4444';
+                    }
+                });
+            } catch (error) {
+                console.error('Error checking favorites:', error);
+            }
+        }
+
+        async function toggleFavorite(propertyId, btn) {
+            try {
+                const icon = btn.querySelector('span');
+                const isFavorited = icon.classList.contains('filled');
+                
+                if (isFavorited) {
+                    await favoriteService.removeFavorite(propertyId);
+                    icon.classList.remove('filled');
+                    icon.style.color = '';
+                    if (typeof showNotification !== 'undefined') {
+                        showNotification('Removed from favorites', 'success');
+                    }
+                } else {
+                    await favoriteService.addFavorite(propertyId);
+                    icon.classList.add('filled');
+                    icon.style.color = '#ef4444';
+                    if (typeof showNotification !== 'undefined') {
+                        showNotification('Added to favorites', 'success');
+                    }
+                }
+            } catch (error) {
+                const errorMsg = error.message || 'Failed to update favorite';
+                if (typeof showNotification !== 'undefined') {
+                    showNotification(errorMsg, 'error');
+                } else {
+                    alert(errorMsg);
+                }
+            }
+        }
+
+        function setupFilters() {
+            document.getElementById('buy-toggle').addEventListener('click', () => {
+                currentType = 'buy';
+                document.getElementById('buy-toggle').className = 'flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow-sm transition-all';
+                document.getElementById('rent-toggle').className = 'flex-1 px-4 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors';
+                loadProperties();
+            });
+
+            document.getElementById('rent-toggle').addEventListener('click', () => {
+                currentType = 'rent';
+                document.getElementById('rent-toggle').className = 'flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white shadow-sm transition-all';
+                document.getElementById('buy-toggle').className = 'flex-1 px-4 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors';
+                loadProperties();
+            });
+
+            document.getElementById('search-btn').addEventListener('click', async () => {
+                const search = document.getElementById('search-input').value.trim();
+                const priceFilter = document.getElementById('price-filter').value;
+                
+                const filters = {};
+                if (search) filters.search = search;
+                
+                if (priceFilter !== 'any') {
+                    const [min, max] = priceFilter.split('-');
+                    if (min) filters.minPrice = parseFloat(min);
+                    if (max) filters.maxPrice = parseFloat(max.replace('+', ''));
+                }
+                
+                await loadProperties(filters);
+            });
+
+            document.getElementById('apply-filters-btn').addEventListener('click', async () => {
+                const search = document.getElementById('search-input').value.trim();
+                const priceFilter = document.getElementById('price-filter').value;
+                
+                const filters = {};
+                if (search) filters.search = search;
+                
+                if (priceFilter !== 'any') {
+                    const parts = priceFilter.split('-');
+                    if (parts[0]) filters.minPrice = parseFloat(parts[0]);
+                    if (parts[1]) {
+                        const max = parts[1].replace('+', '');
+                        if (max) filters.maxPrice = parseFloat(max);
+                    }
+                }
+                
+                await loadProperties(filters);
+            });
+        }
+
+        function logout() {
+            if (typeof authService !== 'undefined' && authService) {
+                authService.logout();
+            } else {
+                authManager.removeToken();
+                localStorage.clear();
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

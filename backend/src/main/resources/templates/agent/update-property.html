@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Edit Property - EstateManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-hidden">
+<div class="flex h-screen w-full">
+<aside class="w-72 flex-none bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full hidden lg:flex z-10">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
+</div>
+<div>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">EstateManager</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Manage portfolio</p>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/agent/dashboard}">
+<span class="material-symbols-outlined fill-1">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/agent/my-properties}">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 group-hover:text-primary transition-colors">home</span>
+<span class="text-sm font-medium">My Properties</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/agent/profile}">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 group-hover:text-primary transition-colors">manage_accounts</span>
+<span class="text-sm font-medium">Profile Management</span>
+</a>
+</div>
+</div>
+<div class="mt-auto px-6 py-2 border-t border-slate-200 dark:border-slate-800">
+<button onclick="window.logout()" class="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-red-500 transition-colors py-2 text-sm font-medium">
+<span class="material-symbols-outlined text-[20px]">logout</span> Log Out
+</button>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-background-light dark:bg-background-dark">
+<div class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
+</div>
+<span class="font-bold text-slate-900 dark:text-white text-lg">EstateManager</span>
+</div>
+<button class="text-slate-600 dark:text-slate-400"><span class="material-symbols-outlined">menu</span></button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 lg:p-10 scroll-smooth">
+<div class="max-w-5xl mx-auto flex flex-col gap-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<nav aria-label="Breadcrumb" class="flex text-sm text-slate-500 mb-1">
+<ol class="flex items-center space-x-2">
+<li><a class="hover:text-primary" th:href="@{/agent/dashboard}">Dashboard</a></li>
+<li><span class="text-slate-400">/</span></li>
+<li class="font-medium text-slate-900 dark:text-white">Edit Property</li>
+</ol>
+</nav>
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Edit Property</h1>
+</div>
+<div class="flex items-center gap-3">
+<button onclick="window.location.href='/agent/my-properties'" class="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" type="button">Cancel</button>
+<button type="button" onclick="window.saveChanges()" class="px-4 py-2 text-sm font-bold text-white bg-primary rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-md shadow-blue-500/20">Save Changes</button>
+</div>
+</div>
+<div id="error-message" class="hidden p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm"></div>
+<form class="flex flex-col gap-6" id="edit-property-form">
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 lg:p-8">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                        General Information
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="md:col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="title">Property Title</label>
+<input class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm" id="title" name="title" type="text" value=""/>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="price">Price</label>
+<div class="relative rounded-md shadow-sm">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+<span class="text-slate-500 sm:text-sm">$</span>
+</div>
+<input class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-7 text-slate-900 dark:text-white focus:border-primary focus:ring-primary sm:text-sm" id="price" name="price" placeholder="0.00" type="number" step="0.01" value=""/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="type">Property Type</label>
+<select class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-primary sm:text-sm" id="type" name="type">
+<option value="rent">For Rent</option>
+<option value="buy">For Sale</option>
+</select>
+</div>
+<div class="md:col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="location">Location</label>
+<input class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm" id="location" name="location" type="text" value=""/>
+</div>
+<div class="md:col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="description">Description</label>
+<textarea class="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm" id="description" name="description" rows="4"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 lg:p-8">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">photo_library</span>
+                            Gallery
+                        </h2>
+</div>
+<div id="existing-images" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4"></div>
+<div onclick="document.getElementById('image-upload').click()" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-3xl text-slate-400 mb-2">cloud_upload</span>
+<span class="text-xs font-medium text-slate-500">Upload New Photo</span>
+<input id="image-upload" accept="image/*" class="hidden" multiple type="file"/>
+</div>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script th:src="@{/js/services/property.service.js}"></script>
+    <script th:src="@{/js/services/upload.service.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!RoleGuard.requireAgent()) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const propertyId = urlParams.get('id');
+
+    if (!propertyId) {
+        alert("Property ID is required");
+        window.location.href = '/agent/my-properties';
+        return;
+    }
+
+    await window.loadProperty(propertyId);
+    window.setupImageUpload();
+});
+
+window.currentProperty = null;
+window.uploadedImages = [];
+
+window.loadProperty = async function(id) {
+    try {
+        window.currentProperty = await propertyService.getPropertyById(id);
+        
+        document.getElementById('title').value = window.currentProperty.title || '';
+        document.getElementById('price').value = window.currentProperty.price || '';
+        document.getElementById('type').value = window.currentProperty.type || 'buy';
+        document.getElementById('location').value = window.currentProperty.location || '';
+        document.getElementById('description').value = window.currentProperty.description || '';
+        
+        // Fix image URLs - ensure they're in the correct format
+        window.uploadedImages = (window.currentProperty.images || []).map(img => {
+            if (!img) return '';
+            if (img.startsWith('http://') || img.startsWith('https://')) {
+                return img;
+            } 
+            if (img.startsWith('/uploads/')) {
+                return img;
+            }
+            return '/uploads/images/' + img.replace(/^\/uploads\/images\//, '');
+        }).filter(img => img);
+        window.displayExistingImages();
+    } catch (error) {
+        alert('Failed to load property: ' + error.message);
+        window.location.href = '/agent/my-properties';
+    }
+};
+
+window.displayExistingImages = function() {
+    const container = document.getElementById('existing-images');
+    if (!window.uploadedImages || window.uploadedImages.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = window.uploadedImages.map((img, idx) => {
+        // Fix image URL if needed
+        let imageUrl = img;
+        if (!img.startsWith('http://') && !img.startsWith('https://') && !img.startsWith('/uploads/')) {
+            imageUrl = '/uploads/images/' + img;
+        }
+        // Escape for onclick handler - handle both single and double quotes
+        const escapedUrl = imageUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        return `
+        <div class="group relative aspect-[4/3] rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+            <img src="${imageUrl}" alt="Image ${idx + 1}" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%23e0e0e0%27 width=%27400%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23888%27%3ENo Image%3C/text%3E%3C/svg%3E'"/>
+            <button type="button" onclick="window.removeImage('${escapedUrl}')" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-2xl">delete</span>
+            </button>
+        </div>
+    `;
+    }).join('');
+};
+
+window.removeImage = function(imageUrl) {
+    // Normalize the URL (remove escape characters)
+    const normalizedUrl = imageUrl.replace(/\\'/g, "'").replace(/&quot;/g, '"');
+    
+    window.uploadedImages = window.uploadedImages.filter(img => {
+        const normalizedImg = img.replace(/\\'/g, "'").replace(/&quot;/g, '"');
+        // Check multiple formats
+        if (normalizedImg === normalizedUrl) return false;
+        if (normalizedImg === normalizedUrl.replace('/uploads/images/', '')) return false;
+        if (normalizedImg.replace('/uploads/images/', '') === normalizedUrl) return false;
+        if (normalizedImg.replace('/uploads/images/', '') === normalizedUrl.replace('/uploads/images/', '')) return false;
+        return true;
+    });
+    window.displayExistingImages();
+};
+
+window.setupImageUpload = function() {
+    document.getElementById('image-upload').addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        for (const file of files) {
+            const validation = uploadService.validateImage(file);
+            if (!validation.valid) {
+                if (typeof showNotification !== 'undefined') {
+                    showNotification(validation.error, 'error');
+                } else {
+                    alert(validation.error);
+                }
+                continue;
+            }
+
+                    try {
+                        const imageUrl = await uploadService.uploadImage(file);
+                        window.uploadedImages.push(imageUrl);
+                        window.displayExistingImages();
+                        if (typeof showNotification !== 'undefined') {
+                            showNotification('Image uploaded successfully', 'success');
+                        }
+                    } catch (error) {
+                        const errorMsg = 'Failed to upload: ' + error.message;
+                        if (typeof showNotification !== 'undefined') {
+                            showNotification(errorMsg, 'error');
+                        } else {
+                            alert(errorMsg);
+                        }
+                    }
+        }
+        e.target.value = '';
+    });
+};
+
+window.saveChanges = async function() {
+    if (!window.currentProperty) return;
+    
+    const errorDiv = document.getElementById('error-message');
+    const title = document.getElementById('title').value.trim();
+    const price = document.getElementById('price').value;
+    const type = document.getElementById('type').value;
+    const location = document.getElementById('location').value.trim();
+    const description = document.getElementById('description').value.trim();
+
+    if (!title || !price || !type || !location) {
+        errorDiv.textContent = 'Please fill in all required fields';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+
+    try {
+        const propertyData = {
+            title: title,
+            description: description,
+            price: parseFloat(price),
+            location: location,
+            type: type,
+            images: window.uploadedImages
+        };
+
+        await propertyService.updateProperty(window.currentProperty.id, propertyData);
+        if (typeof showNotification !== 'undefined') {
+            showNotification('Property updated successfully!', 'success');
+        } else {
+            alert('Property updated successfully!');
+        }
+        setTimeout(() => {
+            window.location.href = '/agent/my-properties';
+        }, 1500);
+    } catch (error) {
+        errorDiv.textContent = error.message || 'Failed to update property';
+        errorDiv.classList.remove('hidden');
+        if (typeof showNotification !== 'undefined') {
+            showNotification(error.message || 'Failed to update property', 'error');
+        }
+    }
+};
+
+window.logout = function() {
+    if (typeof authService !== 'undefined' && authService) {
+        authService.logout();
+    } else {
+        authManager.removeToken();
+        localStorage.clear();
+        window.location.href = '/';
+    }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Profile - EstateManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-hidden">
+<div class="flex h-screen w-full">
+<aside class="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-full">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-gradient-to-tr from-primary to-blue-600 rounded-lg size-10 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+<span class="material-symbols-outlined text-2xl">real_estate_agent</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-normal">EstateManager</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Client Portal</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1 px-3 py-2 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/client/dashboard}">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group" th:href="@{/client/favorites}">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">bookmark</span>
+<p class="text-sm font-medium leading-normal">Saved Properties</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-400" href="#">
+<span class="material-symbols-outlined text-fill">account_circle</span>
+<p class="text-sm font-medium leading-normal">Profile Management</p>
+</a>
+</nav>
+</div>
+<div class="p-4">
+<button onclick="window.logout()" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-sm font-medium leading-normal">Log Out</span>
+</button>
+</div>
+</aside>
+<div class="flex-1 flex flex-col h-full overflow-hidden relative">
+<header class="h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 z-10">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold hidden sm:block">Profile</h2>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+<div class="max-w-6xl mx-auto space-y-6">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">My Profile</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Manage your profile and contact details</p>
+</div>
+</div>
+</div>
+<div id="error-message" class="hidden p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-primary/20 to-blue-400/20"></div>
+<div class="relative mt-8 mb-4 group">
+<div class="size-32 rounded-full border-4 border-white dark:border-slate-900 shadow-md bg-slate-100 overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-slate-400">account_circle</span>
+</div>
+</div>
+<h3 id="profile-name" class="text-xl font-bold text-slate-900 dark:text-white">Loading...</h3>
+<p id="profile-email" class="text-primary font-medium text-sm">Loading...</p>
+</div>
+<div class="bg-primary/5 rounded-xl p-5 border border-primary/10">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5">verified_user</span>
+<div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Account Status</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Your profile is <strong>Active</strong>. You have full access to all features.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-8 space-y-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 sm:p-8">
+<div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+<div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Personal Information</h3>
+</div>
+<form id="profile-form" class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</label>
+<input id="name" class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-shadow" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
+<input id="email" disabled class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 px-3 py-2.5 text-sm" type="email"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300">New Password (leave blank to keep current)</label>
+<input id="password" class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-shadow" type="password" placeholder="Enter new password"/>
+<small class="text-xs text-slate-500 dark:text-slate-400">Must be at least 8 characters with letters, numbers, and special characters</small>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-300">Confirm New Password</label>
+<input id="confirm-password" class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-shadow" type="password" placeholder="Confirm new password"/>
+</div>
+<div class="pt-4 flex gap-3">
+<button type="submit" class="bg-primary hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2 shadow-sm shadow-blue-500/30">
+<span class="material-symbols-outlined text-[20px]">save</span> Save Changes
+</button>
+<a th:href="@{/client/dashboard}" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium py-2.5 px-6 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2">
+Cancel
+</a>
+</div>
+</form>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script th:src="@{/js/services/user.service.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!RoleGuard.requireAuth()) return;
+
+    // Load profile
+    await loadProfile();
+
+    // Setup form
+    document.getElementById('profile-form').addEventListener('submit', handleSubmit);
+});
+
+async function loadProfile() {
+    try {
+        const user = await userService.getProfile();
+        document.getElementById('profile-name').textContent = user.name || 'User';
+        document.getElementById('profile-email').textContent = user.email;
+        document.getElementById('name').value = user.name || '';
+        document.getElementById('email').value = user.email;
+    } catch (error) {
+        console.error('Error loading profile:', error);
+        showNotification('Failed to load profile', 'error');
+    }
+}
+
+async function handleSubmit(e) {
+    e.preventDefault();
+    const errorDiv = document.getElementById('error-message');
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    const name = document.getElementById('name').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    if (password && password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+
+    try {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">hourglass_empty</span> Saving...';
+
+        const updateData = { name: name };
+        if (password) {
+            updateData.password = password;
+        }
+
+        await userService.updateProfile(updateData);
+        if (typeof showNotification !== 'undefined') {
+            showNotification('Profile updated successfully!', 'success');
+        } else {
+            alert('Profile updated successfully!');
+        }
+        setTimeout(() => window.location.reload(), 1000);
+    } catch (error) {
+        errorDiv.textContent = error.message || 'Failed to update profile';
+        errorDiv.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">save</span> Save Changes';
+    }
+}
+
+function logout() {
+    if (typeof authService !== 'undefined' && authService) {
+        authService.logout();
+    } else {
+        authManager.removeToken();
+        localStorage.clear();
+        window.location.href = '/';
+    }
+}
+</script>
+</body>
+</html>

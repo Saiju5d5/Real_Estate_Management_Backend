@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Property Details - EstateManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-200 relative">
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+        <div class="px-4 md:px-10 lg:px-40 flex justify-center">
+            <div class="flex h-16 w-full max-w-[1280px] items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="text-primary size-8 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center rounded-lg">
+                        <span class="material-symbols-outlined text-2xl">real_estate_agent</span>
+                    </div>
+                    <h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">EstateManager</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div id="user-info" class="hidden md:flex items-center gap-3 cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-400 shadow-sm">
+                            <span class="material-symbols-outlined text-[28px]">account_circle</span>
+                        </div>
+                        <span id="user-name-display" class="text-sm font-bold text-slate-900 dark:text-white">Guest</span>
+                    </div>
+                    <button onclick="handleBack()" class="md:hidden p-2 text-slate-700 dark:text-slate-300">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex flex-col items-center w-full min-h-screen pb-12">
+        <div class="w-full max-w-[1280px] px-4 md:px-10 lg:px-40 py-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <a onclick="handleBack()" class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors group cursor-pointer">
+                    <span class="material-symbols-outlined text-lg transition-transform group-hover:-translate-x-1">arrow_back</span> Back
+                </a>
+            </div>
+        </div>
+
+        <div class="w-full max-w-[1280px] px-4 md:px-10 lg:px-40 pb-8">
+            <div id="image-gallery" class="grid grid-cols-1 md:grid-cols-4 gap-3 h-[400px] md:h-[500px]">
+                <div class="col-span-full flex justify-center items-center py-20">
+                    <div class="spinner border-4 border-slate-200 border-t-primary rounded-full w-12 h-12 animate-spin"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full max-w-[1280px] px-4 md:px-10 lg:px-40">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 flex flex-col gap-8">
+                    <div id="property-info" class="flex flex-col gap-4 border-b border-slate-200 dark:border-slate-800 pb-8">
+                        <div>
+                            <h1 id="property-title" class="text-slate-900 dark:text-white text-3xl md:text-4xl font-black mb-2">Loading...</h1>
+                            <p id="property-location" class="text-slate-500 dark:text-slate-400 text-lg">Loading...</p>
+                        </div>
+                        <div class="flex items-end gap-4">
+                            <h2 id="property-price" class="text-primary text-4xl font-bold tracking-tight">$0</h2>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <h3 class="text-slate-900 dark:text-white text-xl font-bold">About this home</h3>
+                        <div class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            <p id="property-description">Loading property description...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="sticky top-24 flex flex-col gap-4">
+                        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 p-6">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Contact Agent</h3>
+                            <form id="contact-form" class="flex flex-col gap-3">
+                                <input required id="contact-name" class="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Name" type="text"/>
+                                <input required id="contact-email" class="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Email" type="email"/>
+                                <input required id="contact-phone" class="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="Phone" type="tel"/>
+                                <textarea required id="contact-message" class="w-full p-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm resize-none text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="I am interested in this property..." rows="3"></textarea>
+                                <button type="submit" class="mt-2 w-full h-11 flex items-center justify-center rounded-lg bg-primary hover:bg-blue-600 text-white font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg">
+                                    Contact Agent
+                                </button>
+                            </form>
+                        </div>
+                        <div id="favorite-button-container" class="grid grid-cols-2 gap-3 hidden">
+                            <button onclick="toggleFavorite()" class="flex items-center justify-center gap-2 h-11 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                                <span id="favorite-icon" class="material-symbols-outlined text-[20px] text-primary">favorite</span> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script th:src="@{/js/services/property.service.js}"></script>
+    <script th:src="@{/js/services/favorite.service.js}"></script>
+    <script th:src="@{/js/services/user.service.js}"></script>
+    <script>
+        let currentProperty = null;
+        let isFavorited = false;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const propertyId = urlParams.get('id');
+
+            if (!propertyId) {
+                alert('Property ID is required');
+                handleBack();
+                return;
+            }
+
+            await loadProperty(propertyId);
+            
+            // Check if user is authenticated and load user info
+            if (authManager.isAuthenticated()) {
+                try {
+                    const user = await userService.getProfile();
+                    document.getElementById('user-name-display').textContent = user.name || user.email;
+                    document.getElementById('user-info').classList.remove('hidden');
+                    
+                    // Hide contact form if user is an agent (they are viewing their own property)
+                    if (user.role === 'agent') {
+                        const contactFormContainer = document.querySelector('.lg\\:col-span-1 > div > div:first-child');
+                        if (contactFormContainer) {
+                            contactFormContainer.style.display = 'none';
+                        }
+                    } else if (user.role === 'client') {
+                        document.getElementById('favorite-button-container').classList.remove('hidden');
+                        await checkFavoriteStatus(propertyId);
+                        // Setup contact form only for clients
+                        document.getElementById('contact-form').addEventListener('submit', handleContactSubmit);
+                    }
+                } catch (error) {
+                    console.error('Error loading user:', error);
+                    // Setup contact form for non-authenticated users
+                    document.getElementById('contact-form').addEventListener('submit', handleContactSubmit);
+                }
+            } else {
+                // Setup contact form for non-authenticated users
+                document.getElementById('contact-form').addEventListener('submit', handleContactSubmit);
+            }
+        });
+
+        async function loadProperty(id) {
+            try {
+                currentProperty = await propertyService.getPropertyById(id);
+                displayProperty(currentProperty);
+            } catch (error) {
+                alert('Failed to load property: ' + error.message);
+                handleBack();
+            }
+        }
+
+        function displayProperty(property) {
+            const price = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(property.price);
+
+            document.getElementById('property-title').textContent = property.title || 'Property';
+            document.getElementById('property-location').textContent = property.location || '';
+            document.getElementById('property-price').textContent = property.type === 'rent' ? price + '/mo' : price;
+            document.getElementById('property-description').textContent = property.description || 'No description available.';
+
+            // Display images - Fix image URLs
+            const gallery = document.getElementById('image-gallery');
+            if (property.images && property.images.length > 0) {
+                const fixImageUrl = (img) => {
+                    if (img.startsWith('http://') || img.startsWith('https://')) {
+                        return img;
+                    } else if (img.startsWith('/uploads/')) {
+                        return img;
+                    } else {
+                        return '/uploads/images/' + img;
+                    }
+                };
+                
+                const mainImage = fixImageUrl(property.images[0]);
+                gallery.innerHTML = `
+                    <div class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-xl cursor-pointer">
+                        <img src="${mainImage}" alt="${property.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%23e0e0e0%27 width=%27400%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23888%27%3ENo Image%3C/text%3E%3C/svg%3E'"/>
+                    </div>
+                    ${property.images.slice(1, 5).map((img, idx) => {
+                        const fixedImg = fixImageUrl(img);
+                        return `
+                        <div class="hidden md:block relative group overflow-hidden rounded-xl cursor-pointer">
+                            <img src="${fixedImg}" alt="Image ${idx + 2}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%23e0e0e0%27 width=%27400%27 height=%27300%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 fill=%27%23888%27%3ENo Image%3C/text%3E%3C/svg%3E'"/>
+                        </div>
+                    `;
+                    }).join('')}
+                    ${property.images.length > 5 ? `
+                        <div class="hidden md:block relative group overflow-hidden rounded-xl cursor-pointer">
+                            <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center hover:bg-slate-900/50 transition-colors">
+                                <span class="text-white font-semibold flex items-center gap-2"><span class="material-symbols-outlined">grid_view</span> View All Photos</span>
+                            </div>
+                            <img src="${fixImageUrl(property.images[4])}" alt="More images" class="w-full h-full object-cover"/>
+                        </div>
+                    ` : ''}
+                `;
+            } else {
+                gallery.innerHTML = `
+                    <div class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-xl cursor-pointer">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect fill='%23e0e0e0' width='800' height='600'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-size='48' fill='%23888'%3E%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-size='24' fill='%23888'%3ENo Image%3C/text%3E%3C/svg%3E" alt="No image" class="w-full h-full object-cover"/>
+                    </div>
+                `;
+            }
+        }
+
+        async function checkFavoriteStatus(propertyId) {
+            try {
+                const favorites = await favoriteService.getFavorites();
+                isFavorited = favorites.some(f => f.property.id === propertyId);
+                updateFavoriteButton();
+            } catch (error) {
+                console.error('Error checking favorite status:', error);
+            }
+        }
+
+        function updateFavoriteButton() {
+            const icon = document.getElementById('favorite-icon');
+            if (isFavorited) {
+                icon.classList.add('filled');
+                icon.style.color = '#ef4444';
+            } else {
+                icon.classList.remove('filled');
+                icon.style.color = '';
+            }
+        }
+
+        async function toggleFavorite() {
+            if (!authManager.isAuthenticated()) {
+                window.location.href = '/auth/login';
+                return;
+            }
+
+            try {
+                if (isFavorited) {
+                    await favoriteService.removeFavorite(currentProperty.id);
+                    isFavorited = false;
+                    showNotification('Removed from favorites', 'success');
+                } else {
+                    await favoriteService.addFavorite(currentProperty.id);
+                    isFavorited = true;
+                    showNotification('Added to favorites', 'success');
+                }
+                updateFavoriteButton();
+            } catch (error) {
+                showNotification(error.message || 'Failed to update favorite', 'error');
+            }
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            if (!authManager.isAuthenticated()) {
+                alert('Please login to contact the agent');
+                window.location.href = '/auth/login';
+                return;
+            }
+            
+            alert('Thank you for your interest! The agent will contact you soon.');
+            e.target.reset();
+        }
+
+        function handleBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Saved Properties - EstateManager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col">
+    <header class="bg-white dark:bg-[#1a2634] border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="size-9 rounded-lg bg-primary flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-[20px]">real_estate_agent</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">EstateManager</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-400 shadow-sm">
+                        <span class="material-symbols-outlined text-[28px]">account_circle</span>
+                    </div>
+                    <span id="user-name-display" class="text-sm font-bold text-slate-900 dark:text-white">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col">
+        <div class="flex flex-grow max-w-[1440px] mx-auto w-full">
+            <aside class="sticky top-[65px] h-[calc(100vh-65px)] w-64 p-4 bg-white dark:bg-[#1a2634] border-r border-slate-200 dark:border-slate-700 flex flex-col gap-6 py-8 hidden lg:flex">
+                <nav class="flex flex-col gap-1">
+                    <a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-medium text-sm transition-colors" th:href="@{/client/dashboard}"><span class="material-symbols-outlined text-[20px]">dashboard</span> Dashboard</a>
+                    <a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg font-bold text-sm" th:href="@{/client/favorites}">
+                        <span class="material-symbols-outlined text-[20px] filled">bookmark</span> Saved Properties
+                        <span id="side-count" class="ml-auto bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg font-medium text-sm transition-colors" th:href="@{/client/profile}"><span class="material-symbols-outlined text-[20px]">account_circle</span> Profile</a>
+                </nav>
+                <div class="mt-auto">
+                    <button onclick="logout()" class="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-red-500 transition-colors py-2 text-sm font-medium">
+                        <span class="material-symbols-outlined text-[20px]">logout</span> Log Out
+                    </button>
+                </div>
+            </aside>
+
+            <section class="flex-grow px-4 sm:px-6 lg:px-8 py-8 w-full bg-background-light dark:bg-background-dark flex flex-col min-h-[calc(100vh-65px)]">
+                <div class="mb-8">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2" id="welcome-text">Welcome back</h2>
+                    <p class="text-slate-500 dark:text-slate-400">Manage your saved homes and search preferences.</p>
+                </div>
+
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[24px] filled">bookmark</span>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Saved Properties</h3>
+                    </div>
+                </div>
+
+                <div id="saved-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="col-span-full flex justify-center py-20">
+                        <div class="spinner border-4 border-slate-200 border-t-primary rounded-full w-12 h-12 animate-spin"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script th:src="@{/js/services/favorite.service.js}"></script>
+    <script th:src="@{/js/services/user.service.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!RoleGuard.requireClient()) return;
+
+            // Load user data
+            try {
+                const user = await userService.getProfile();
+                document.getElementById('user-name-display').textContent = user.name || user.email;
+                document.getElementById('welcome-text').textContent = `Welcome back, ${user.name || 'User'}`;
+            } catch (error) {
+                console.error('Error loading user:', error);
+            }
+
+            // Load favorites
+            await loadFavorites();
+        });
+
+        async function loadFavorites() {
+            try {
+                const favorites = await favoriteService.getFavorites();
+                displayFavorites(favorites);
+                document.getElementById('side-count').textContent = favorites.length;
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+                showNotification('Failed to load favorites', 'error');
+            }
+        }
+
+        function displayFavorites(favorites) {
+            const container = document.getElementById('saved-grid');
+            if (!favorites || favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center">
+                        <div class="size-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 mb-4">
+                            <span class="material-symbols-outlined text-4xl">bookmark_border</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white">No saved properties</h4>
+                        <p class="text-slate-500 max-w-xs mt-1">Tap the heart icon on properties you like to save them here for later.</p>
+                        <a th:href="@{/client/dashboard}" class="mt-6 text-primary font-bold hover:underline">Browse Listings</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = favorites.map(favorite => {
+                const property = favorite.property;
+                const price = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    maximumFractionDigits: 0
+                }).format(property.price);
+                
+                // Fix image URL
+                let mainImage = 'https://via.placeholder.com/400x300?text=No+Image';
+                if (property.images && property.images.length > 0) {
+                    const img = property.images[0];
+                    if (img.startsWith('http://') || img.startsWith('https://')) {
+                        mainImage = img;
+                    } else if (img.startsWith('/uploads/')) {
+                        mainImage = img;
+                    } else {
+                        mainImage = '/uploads/images/' + img;
+                    }
+                }
+                
+                return `
+                    <article class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 dark:border-slate-700 flex flex-col">
+                        <div class="relative aspect-[4/3] overflow-hidden">
+                            <a href="/property/details?id=${property.id}" class="block w-full h-full">
+                                <img src="${mainImage}" alt="${property.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'"/>
+                            </a>
+                            <button onclick="removeFavorite(${property.id})" class="absolute top-3 right-3 p-2 bg-white text-red-500 shadow-md rounded-full hover:bg-slate-50 transition-colors" title="Remove from favorites">
+                                <span class="material-symbols-outlined text-[20px] block filled">favorite</span>
+                            </button>
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <h4 class="text-2xl font-bold text-primary">${price}</h4>
+                            <address class="not-italic text-slate-900 dark:text-white font-semibold truncate">${property.title}</address>
+                            <p class="text-slate-500 text-sm mb-4">${property.location}</p>
+                            <div class="mt-auto border-t border-slate-100 dark:border-slate-700 pt-4">
+                                <a href="/property/details?id=${property.id}" class="block w-full bg-primary hover:bg-blue-600 text-white text-center py-2 rounded-lg font-semibold text-sm transition-all">View Details</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function removeFavorite(propertyId) {
+            if (!confirm('Remove this property from your favorites?')) return;
+            
+            try {
+                await favoriteService.removeFavorite(propertyId);
+                showNotification('Removed from favorites', 'success');
+                await loadFavorites();
+            } catch (error) {
+                showNotification(error.message || 'Failed to remove favorite', 'error');
+            }
+        }
+
+        function logout() {
+            if (typeof authService !== 'undefined' && authService) {
+                authService.logout();
+            } else {
+                authManager.removeToken();
+                localStorage.clear();
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

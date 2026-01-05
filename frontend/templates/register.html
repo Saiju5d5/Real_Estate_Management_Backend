@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>EstateManager - Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col">
+    <header class="w-full bg-white dark:bg-[#1a2634] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+        <div class="max-w-[1280px] mx-auto px-6 h-16 flex items-center">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white">
+                    <span class="material-symbols-outlined text-2xl">real_estate_agent</span>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">EstateManager</h2>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div class="bg-white dark:bg-[#1a2634] w-full max-w-[550px] rounded-2xl shadow-xl overflow-hidden flex flex-col">
+            <div class="w-full p-8 sm:p-10 flex flex-col justify-center">
+                <div class="mb-8 text-center">
+                    <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Create your account</h1>
+                    <p class="text-slate-500 dark:text-slate-400">Join EstateManager to start your journey.</p>
+                </div>
+
+                <div id="error-message" class="hidden mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm"></div>
+
+                <div class="mb-8">
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 text-center">I want to use EstateManager as a:</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="group cursor-pointer">
+                            <input checked name="role" type="radio" value="client" class="peer sr-only"/>
+                            <div class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 text-slate-600 dark:text-slate-400 hover:border-primary hover:bg-slate-50 dark:hover:bg-slate-700 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary transition-all shadow-sm">
+                                <span class="material-symbols-outlined">person</span>
+                                <span class="font-medium">Client</span>
+                            </div>
+                        </label>
+                        <label class="group cursor-pointer">
+                            <input name="role" type="radio" value="agent" class="peer sr-only"/>
+                            <div class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 text-slate-600 dark:text-slate-400 hover:border-primary hover:bg-slate-50 dark:hover:bg-slate-700 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary transition-all shadow-sm">
+                                <span class="material-symbols-outlined">real_estate_agent</span>
+                                <span class="font-medium">Agent</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <form id="register-form" class="space-y-5" onsubmit="event.preventDefault(); handleRegister();">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="full-name">Full Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <span class="material-symbols-outlined text-[20px]">badge</span>
+                            </div>
+                            <input id="full-name" required pattern="^[a-zA-Z]+\s+[a-zA-Z]+.*$" title="Please enter both your first and last name" 
+                                   class="block w-full pl-10 pr-3 py-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary sm:text-sm transition-colors" 
+                                   placeholder="Enter your full name" type="text"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="email">Email Address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <span class="material-symbols-outlined text-[20px]">mail</span>
+                            </div>
+                            <input id="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" title="Please enter a valid email address" 
+                                   class="block w-full pl-10 pr-3 py-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary sm:text-sm transition-colors" 
+                                   placeholder="name@example.com" type="email"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="signup-pass">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <span class="material-symbols-outlined text-[20px]">lock</span>
+                            </div>
+                            <input id="signup-pass" required minlength="8" 
+                                   class="block w-full pl-10 pr-10 py-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary sm:text-sm transition-colors" 
+                                   placeholder="Create a password" type="password"/>
+                            <button type="button" onclick="const pass = document.getElementById('signup-pass'); const icon = this.querySelector('span'); if(pass.type === 'password'){ pass.type = 'text'; icon.innerText = 'visibility_off'; } else { pass.type = 'password'; icon.innerText = 'visibility'; }" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-white focus:outline-none">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </button>
+                        </div>
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">info</span> Must be at least 8 characters with letters, numbers, and special characters
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="confirm-pass">Confirm Password</label>
+                        <input id="confirm-pass" required 
+                               class="block w-full px-3 py-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary sm:text-sm transition-colors" 
+                               placeholder="Confirm your password" type="password"/>
+                    </div>
+
+                    <div class="flex items-start mt-4">
+                        <div class="flex items-center h-5">
+                            <input class="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded cursor-pointer" id="terms" type="checkbox" required/>
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label class="font-medium text-slate-700 dark:text-slate-300" for="terms">I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a></label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm text-slate-600 dark:text-slate-400">
+                        Already have an account? <a class="font-bold text-primary hover:text-blue-600" th:href="@{/auth/login}">Log in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full py-6 text-center text-slate-400 dark:text-slate-600 text-sm">
+        <p>© 2024 EstateManager Inc. All rights reserved.</p>
+    </footer>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Redirect if already authenticated
+            if (authManager.isAuthenticated()) {
+                const role = authManager.getUserRole();
+                if (role === 'agent') {
+                    window.location.href = '/agent/dashboard';
+                } else if (role === 'client') {
+                    window.location.href = '/client/dashboard';
+                }
+            }
+        });
+
+        async function handleRegister() {
+            const form = document.getElementById('register-form');
+            const errorDiv = document.getElementById('error-message');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            const name = document.getElementById('full-name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('signup-pass').value;
+            const confirmPassword = document.getElementById('confirm-pass').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Validation
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (!terms) {
+                errorDiv.textContent = 'You must agree to the Terms of Service';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating Account...';
+
+                const userData = {
+                    email: email,
+                    password: password,
+                    name: name,
+                    role: role
+                };
+
+                await authService.register(userData);
+                showNotification('Registration successful! Please login.');
+                setTimeout(() => {
+                    window.location.href = '/auth/login';
+                }, 1500);
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Registration failed. Please try again.';
+                errorDiv.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Account';
+            }
+        }
+    </script>
+</body>
+</html>

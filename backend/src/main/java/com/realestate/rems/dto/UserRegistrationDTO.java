@@ -2,8 +2,8 @@ package com.realestate.rems.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.Set;
 
 /**
  * DTO for user registration
@@ -15,10 +15,15 @@ public class UserRegistrationDTO {
     private String email;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]+$", message = "Password must contain letters, numbers, and at least one special character")
     private String password;
 
-    private Set<String> roles;
+    @NotBlank(message = "Role is required")
+    @Pattern(regexp = "^(agent|client)$", message = "Role must be either 'agent' or 'client'")
+    private String role;
+
+    private String name;
 
     public UserRegistrationDTO() {
     }
@@ -39,12 +44,19 @@ public class UserRegistrationDTO {
         this.password = password;
     }
 
-    public Set<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
-

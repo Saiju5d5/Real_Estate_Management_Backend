@@ -52,9 +52,20 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/api/auth/**",
+                        "/api/properties",
+                        "/api/properties/**",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
-                        "/swagger-ui.html"
+                        "/swagger-ui.html",
+                        "/uploads/**",
+                        "/",
+                        "/auth/**",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/property/**",
+                        "/client/**",
+                        "/agent/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

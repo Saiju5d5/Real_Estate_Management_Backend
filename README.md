@@ -1,30 +1,68 @@
 # Real Estate Management System (REMS)
 
-A comprehensive Spring Boot backend application for managing real estate properties, users, and bookings.
+A full-stack Java application for managing real estate properties with Spring Boot backend and Thymeleaf frontend.
+
+## 📁 Project Structure
+
+```
+real-estate/
+│
+├── backend/                // Spring Boot Backend
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/       // Java source code
+│   │       └── resources/  // Configuration files
+│   └── pom.xml            // Maven dependencies
+│
+├── frontend/               // Frontend (Java Full-Stack UI)
+│   ├── static/            // Static resources (CSS, JS, images)
+│   │   ├── css/           // Stylesheets
+│   │   ├── js/            // JavaScript files
+│   │   └── images/        // Images
+│   └── templates/         // Thymeleaf HTML templates
+│       ├── auth/          // Authentication pages
+│       ├── public/        // Public pages
+│       ├── client/        // Client dashboard pages
+│       ├── agent/         // Agent dashboard pages
+│       └── property/      // Property pages
+│
+└── README.md
+```
 
 ## 🚀 Features
 
 - **User Authentication & Authorization**
   - JWT-based authentication
-  - Role-based access control (ADMIN, AGENT, OWNER, CUSTOMER, TENANT)
-  - Secure password encryption with BCrypt
+  - Role-based access control (Agent/Client)
+  - Secure password encryption
 
 - **Property Management**
   - CRUD operations for properties
-  - Property types: Apartment, House, Villa, Condo, Townhouse, Land, Commercial, Office
-  - Property status tracking: Available, Sold, Rented, Pending, Unavailable
+  - Property image uploads
+  - Advanced search and filtering
+  - Property favorites for clients
 
-- **Booking System**
-  - Create and manage property visit bookings
-  - Booking status management: Pending, Approved, Rejected, Completed, Cancelled
-  - Filter bookings by user, property, or status
+- **Dashboard**
+  - Agent dashboard with statistics
+  - Client dashboard for browsing
+  - Profile management
 
-- **User Management**
-  - User registration and profile management
-  - Role-based user access control
+## 🛠️ Technology Stack
 
-- **API Documentation**
-  - Swagger/OpenAPI documentation available at `/swagger-ui.html`
+**Backend:**
+- Spring Boot 3.2.5
+- Java 17
+- MySQL 8.0+
+- JWT Authentication
+- Spring Security
+- Spring Data JPA
+- Thymeleaf
+
+**Frontend:**
+- Thymeleaf Templates
+- Vanilla JavaScript
+- CSS3 (Responsive Design)
+- Fetch API
 
 ## 📋 Prerequisites
 
@@ -33,16 +71,9 @@ A comprehensive Spring Boot backend application for managing real estate propert
 - MySQL 8.0+
 - IDE (IntelliJ IDEA, Eclipse, or VS Code)
 
-## 🛠️ Setup Instructions
+## 🚀 Setup Instructions
 
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd Real_Estate_Management
-```
-
-### 2. Database Setup
+### 1. Database Setup
 
 Create a MySQL database:
 
@@ -50,49 +81,40 @@ Create a MySQL database:
 CREATE DATABASE rems_db;
 ```
 
-### 3. Environment Configuration
+### 2. Environment Configuration
 
-Create a `.env` file in the `backend` directory (or set environment variables):
+Set environment variables (PowerShell):
 
-```bash
-# Database Configuration
-DB_USERNAME=root
-DB_PASSWORD=your_database_password
-
-# JWT Configuration
-JWT_SECRET=your-256-bit-secret-key-change-this-in-production-minimum-32-characters
+```powershell
+$env:DB_PASSWORD='your_database_password'
+$env:JWT_SECRET='your-256-bit-secret-key-change-this-in-production-minimum-32-characters'
 ```
 
-**Important**: 
-- Replace `your_database_password` with your MySQL root password
-- Replace `JWT_SECRET` with a secure random string (minimum 32 characters)
-- Never commit the `.env` file to version control
+### 3. Application Configuration
 
-### 4. Application Configuration
+Database credentials are configured in `backend/src/main/resources/application.yml`:
 
-The application uses `application.yml` for configuration. Database credentials can be set via environment variables:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rems_db
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:your_password}
+```
 
-- `DB_USERNAME` (default: root)
-- `DB_PASSWORD` (required)
-- `JWT_SECRET` (required - minimum 32 characters)
-
-### 5. Build the Project
+### 4. Build and Run
 
 ```bash
 cd backend
 mvn clean install
-```
-
-### 6. Run the Application
-
-```bash
 mvn spring-boot:run
 ```
 
-Or run the JAR file:
+Or use the provided PowerShell script:
 
-```bash
-java -jar target/rems-1.0.0.jar
+```powershell
+cd backend
+.\start-server.ps1
 ```
 
 The application will start on `http://localhost:8080`
@@ -111,155 +133,136 @@ API documentation is also available at:
 http://localhost:8080/v3/api-docs
 ```
 
-## 🔐 API Endpoints
+## 🌐 Application Routes
+
+### Public Routes
+- `/` - Landing page
+- `/auth/login` - Login page
+- `/auth/register` - Registration page
+
+### Client Routes (ROLE_client)
+- `/client/dashboard` - Browse properties
+- `/client/favorites` - View favorites
+- `/client/profile` - Manage profile
+
+### Agent Routes (ROLE_agent)
+- `/agent/dashboard` - Agent dashboard
+- `/agent/add-property` - Add new property
+- `/agent/update-property` - Update property
+- `/agent/my-properties` - Manage properties
+
+### Shared Routes
+- `/property/details` - Property details page
+
+## 🔐 Default Roles
+
+- **agent** - Can create, update, and delete properties
+- **client** - Can browse properties and add favorites
+
+## 📝 API Endpoints
 
 ### Authentication
-
-- `POST /api/auth/register` - Register a new user (Public)
-- `POST /api/auth/login` - Login and get JWT token (Public)
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login and get JWT token
+- `GET /api/auth/me` - Get current user
 
 ### Properties
+- `GET /api/properties` - Get all properties (with filters)
+- `GET /api/properties/{id}` - Get property by ID
+- `POST /api/properties` - Create property (agent only)
+- `PUT /api/properties/{id}` - Update property (agent only)
+- `DELETE /api/properties/{id}` - Delete property (agent only)
 
-- `GET /api/properties` - Get all properties (ADMIN, AGENT, CUSTOMER)
-- `GET /api/properties/{id}` - Get property by ID (ADMIN, AGENT, CUSTOMER)
-- `POST /api/properties` - Create property (ADMIN only)
-- `PUT /api/properties/{id}` - Update property (ADMIN only)
-- `DELETE /api/properties/{id}` - Delete property (ADMIN only)
+### Favorites
+- `GET /api/favorites` - Get user favorites
+- `POST /api/favorites/{propertyId}` - Add favorite
+- `DELETE /api/favorites/{propertyId}` - Remove favorite
 
 ### Users
+- `GET /api/users/profile` - Get profile
+- `PUT /api/users/profile` - Update profile
 
-- `GET /api/users` - Get all users (ADMIN only)
-- `GET /api/users/{id}` - Get user by ID (ADMIN only)
-- `PUT /api/users/{id}` - Update user (ADMIN only)
-- `DELETE /api/users/{id}` - Delete user (ADMIN only)
+### Upload
+- `POST /api/upload` - Upload image file
 
-### Bookings
+## 📦 Project Architecture
 
-- `GET /api/bookings` - Get all bookings (ADMIN, AGENT)
-- `GET /api/bookings/{id}` - Get booking by ID (ADMIN, AGENT, CUSTOMER, OWNER)
-- `GET /api/bookings/user/{userId}` - Get bookings by user (ADMIN, AGENT)
-- `GET /api/bookings/property/{propertyId}` - Get bookings by property (ADMIN, AGENT, OWNER)
-- `GET /api/bookings/status/{status}` - Get bookings by status (ADMIN, AGENT)
-- `POST /api/bookings` - Create booking (ADMIN, AGENT, CUSTOMER, OWNER)
-- `PUT /api/bookings/{id}` - Update booking (ADMIN, AGENT)
-- `PUT /api/bookings/{id}/status` - Update booking status (ADMIN, AGENT)
-- `DELETE /api/bookings/{id}` - Delete booking (ADMIN, AGENT)
-
-## 🔑 Authentication
-
-All protected endpoints require a JWT token in the Authorization header:
+The application follows a layered architecture:
 
 ```
-Authorization: Bearer <your-jwt-token>
+Controllers (REST API)
+    ↓
+Services (Business Logic)
+    ↓
+Repositories (Data Access)
+    ↓
+Database (MySQL)
 ```
 
-### Example Login Request
-
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "password123"
-  }'
+Frontend structure:
 ```
-
-### Example Authenticated Request
-
-```bash
-curl -X GET http://localhost:8080/api/properties \
-  -H "Authorization: Bearer <your-jwt-token>"
-```
-
-## 👥 User Roles
-
-- **ADMIN**: Full system access
-- **AGENT**: Can manage properties and bookings
-- **OWNER**: Can view and manage own properties
-- **CUSTOMER**: Can view properties and create bookings
-- **TENANT**: Can view properties
-
-## 📦 Project Structure
-
-```
-backend/
-├── src/
-│   ├── main/
-│   │   ├── java/com/realestate/rems/
-│   │   │   ├── config/          # Security, JWT, CORS configuration
-│   │   │   ├── controller/      # REST controllers
-│   │   │   ├── service/         # Business logic
-│   │   │   ├── repository/      # Data access layer
-│   │   │   ├── model/           # Entity models
-│   │   │   ├── dto/             # Data transfer objects
-│   │   │   └── exception/       # Exception handlers
-│   │   └── resources/
-│   │       └── application.yml  # Application configuration
-│   └── test/                     # Test files
-└── pom.xml                       # Maven dependencies
+Templates (Thymeleaf)
+    ↓
+JavaScript Services
+    ↓
+Backend API
 ```
 
 ## 🧪 Testing
 
-Run tests with:
+The application includes:
+- Unit tests for backend services
+- Integration tests for API endpoints
+- Postman collection for API testing
 
-```bash
-mvn test
-```
+See `backend/POSTMAN_TESTING_GUIDE.md` for API testing instructions.
 
-## 🔒 Security Features
+## 📖 Documentation
 
-- JWT token-based authentication
-- Password encryption with BCrypt
-- Role-based access control (RBAC)
-- CORS configuration for frontend integration
-- Input validation with Jakarta Validation
-- Secure exception handling
+- `WORKFLOW_AND_MODULES.md` - Complete system workflow and module documentation
+- `backend/FRONTEND_SETUP.md` - Frontend setup and configuration guide
+- `backend/START_SERVER.md` - Server startup instructions
+
+## 🔧 Configuration Notes
+
+### Static Resources
+Static files (CSS, JS, images) are served from `frontend/static/` folder.
+The application automatically falls back to `backend/src/main/resources/static/` if the frontend folder doesn't exist.
+
+### Templates
+Thymeleaf templates are loaded from `frontend/templates/` folder.
+The application automatically falls back to `backend/src/main/resources/templates/` if the frontend folder doesn't exist.
+
+### Image Uploads
+Uploaded images are stored in `uploads/images/` directory at the project root.
 
 ## 🐛 Troubleshooting
 
-### Database Connection Issues
-
+### Database Connection Error
 - Ensure MySQL is running
-- Verify database credentials in environment variables
-- Check database exists: `CREATE DATABASE rems_db;`
-
-### JWT Token Issues
-
-- Ensure `JWT_SECRET` is set (minimum 32 characters)
-- Token expires after 1 hour (configurable in `application.yml`)
+- Verify database `rems_db` exists
+- Check password is correct in environment variables
 
 ### Port Already in Use
+- Change port in `application.yml`: `server.port: 8081`
+- Or stop the process using port 8080
 
-Change the port in `application.yml`:
-
-```yaml
-server:
-  port: 8081
-```
-
-## 📝 Notes
-
-- The application uses Hibernate auto-DDL (`ddl-auto: update`) for development
-- For production, consider using Flyway or Liquibase for database migrations
-- Default CORS allows `http://localhost:3000` - update in `CorsConfig.java` for production
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+### Frontend Not Loading
+- Verify `frontend/static/` folder exists
+- Check browser console for errors
+- Ensure files are copied correctly
 
 ## 📄 License
 
 This project is licensed under the MIT License.
 
-## 👨‍💻 Author
+## 👥 Authors
 
-Real Estate Management System - Spring Boot Backend
+Real Estate Management System Team
 
----
+## 🙏 Acknowledgments
 
-For detailed API documentation, visit `/swagger-ui.html` when the application is running.
+- Spring Boot team
+- Thymeleaf community
+- All contributors
 

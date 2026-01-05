@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>EstateManager Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased flex flex-col min-h-screen">
+    <header class="w-full bg-white dark:bg-[#1a2530] border-b border-slate-200 dark:border-slate-800 px-6 py-4 shadow-sm">
+        <div class="flex items-center gap-2 text-[#0d141b] dark:text-white">
+            <div class="flex h-8 w-8 items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-3xl">real_estate_agent</span>
+            </div>
+            <h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">EstateManager</h2>
+        </div>
+    </header>
+
+    <div class="flex-1 flex items-center justify-center p-4">
+        <div class="w-full max-w-[480px] bg-white dark:bg-[#1a2530] rounded-2xl shadow-xl dark:shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+            <div class="p-8 sm:p-10">
+                <div class="flex flex-col items-center mb-8">
+                    <h1 class="text-[#0d141b] dark:text-white text-2xl font-bold leading-tight tracking-tight text-center mb-2">Welcome Back</h1>
+                    <p class="text-[#4c739a] dark:text-slate-400 text-sm font-normal text-center">Please enter your details to access your dashboard.</p>
+                </div>
+
+                <div id="error-message" class="hidden mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm"></div>
+
+                <form id="login-form" class="flex flex-col gap-5">
+                    <label class="flex flex-col flex-1">
+                        <p class="text-[#0d141b] dark:text-white text-sm font-medium leading-normal pb-1.5">Email Address</p>
+                        <div class="relative">
+                            <input id="email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" 
+                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0d141b] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#cfdbe7] dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 focus:border-primary dark:focus:border-primary h-12 placeholder:text-[#4c739a] dark:placeholder:text-slate-500 px-4 text-sm font-normal leading-normal transition-all" 
+                                   placeholder="name@gmail.com" type="email" autocomplete="email"/>
+                        </div>
+                    </label>
+
+                    <label class="flex flex-col flex-1">
+                        <div class="flex justify-between items-baseline pb-1.5">
+                            <p class="text-[#0d141b] dark:text-white text-sm font-medium leading-normal">Password</p>
+                        </div>
+                        <div class="flex w-full flex-1 items-stretch rounded-lg group focus-within:ring-2 focus-within:ring-primary/20">
+                            <input id="password" required minlength="6" 
+                                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-lg text-[#0d141b] dark:text-white focus:outline-0 focus:ring-0 border border-[#cfdbe7] dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 focus:border-primary dark:focus:border-primary h-12 placeholder:text-[#4c739a] dark:placeholder:text-slate-500 px-4 border-r-0 text-sm font-normal leading-normal transition-colors" 
+                                   placeholder="••••••••" type="password" autocomplete="current-password"/>
+                            <div onclick="const pass = document.getElementById('password'); const icon = this.querySelector('span'); if(pass.type === 'password'){ pass.type = 'text'; icon.innerText = 'visibility_off'; } else { pass.type = 'password'; icon.innerText = 'visibility'; }" 
+                                 class="text-[#4c739a] dark:text-slate-400 flex border border-[#cfdbe7] dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 items-center justify-center px-4 rounded-r-lg border-l-0 cursor-pointer hover:text-slate-600 dark:hover:text-white transition-colors group-focus-within:border-primary dark:group-focus-within:border-primary">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4 mt-1">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary dark:bg-slate-700 dark:border-slate-600 cursor-pointer" type="checkbox"/>
+                            <span class="text-sm font-medium text-[#4c739a] dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300">Remember me</span>
+                        </label>
+                        <a class="text-primary hover:text-blue-700 dark:hover:text-blue-400 text-sm font-semibold leading-normal underline decoration-transparent hover:decoration-primary transition-all" href="#">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 bg-primary hover:bg-blue-600 text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] transition shadow-lg shadow-blue-500/20 mt-2">
+                        <span class="truncate">Log In</span>
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Don't have an account? <a class="text-primary font-bold hover:underline ml-1" th:href="@{/auth/register}">Sign Up</a>
+                    </p>
+                </div>
+                </div>
+
+            <div class="bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-700/50 p-4 text-center">
+                <p class="text-xs text-slate-400 dark:text-slate-500">© 2024 EstateManager. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/config/api.js}"></script>
+    <script th:src="@{/js/config/auth.js}"></script>
+    <script th:src="@{/js/utils/role-guard.js}"></script>
+    <script th:src="@{/js/services/auth.service.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Redirect if already authenticated
+            if (authManager.isAuthenticated()) {
+                const role = authManager.getUserRole();
+                if (role === 'agent') {
+                    window.location.href = '/agent/dashboard';
+                } else if (role === 'client') {
+                    window.location.href = '/client/dashboard';
+                }
+            }
+
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', handleLogin);
+        });
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="truncate">Logging in...</span>';
+
+                const data = await authService.login(email, password);
+
+                // Redirect based on role
+                if (data.role === 'agent') {
+                    window.location.href = '/agent/dashboard';
+                } else if (data.role === 'client') {
+                    window.location.href = '/client/dashboard';
+                } else {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Login failed. Please check your credentials.';
+                errorDiv.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="truncate">Log In</span>';
+            }
+        }
+    </script>
+</body>
+</html>
